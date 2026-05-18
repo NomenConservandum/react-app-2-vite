@@ -8,7 +8,8 @@ export class AuthStore {
   user: User | null = null;
   isAuth: boolean = false;
   accessToken: string | null = null;
-  
+  isInitialized: boolean = false;
+
   private rootStore: RootStore;
 
   constructor(rootStore: RootStore) {
@@ -19,16 +20,24 @@ export class AuthStore {
     this.initializeAuth();
   }
 
-  private initializeAuth = () => {
+  private initializeAuth = async () => {
     const token = getAccessToken();
     if (token) {
       this.accessToken = token;
       this.isAuth = true;
-      // Не проверяем валидность токена здесь, это сделает checkAuth
+      // Проверяем валидность токена
+      try {
+        await this.checkAuth();
+      } catch (error) {
+        this.logout();
+      }
     }
+    runInAction(() => {
+      this.isInitialized = true;
+    });
   };
 
-  // Actions
+  // ... остальные методы остаются без изменений
   setAuth = (data: AuthResponse) => {
     this.user = data.user;
     this.accessToken = data.accessToken;
@@ -43,22 +52,24 @@ export class AuthStore {
     removeTokens();
   };
 
-  // Async actions
   login = async (credentials: LoginUser) => {
-    try {
-      this.rootStore.settingsStore.setLoading(true);
-      const response = await authApi.login(credentials);
-      runInAction(() => {
-        this.setAuth(response);
-      });
-      return response;
-    } catch (error: any) {
-      this.rootStore.settingsStore.setError(error.message || 'Ошибка входа');
-      throw error;
-    } finally {
-      this.rootStore.settingsStore.setLoading(false);
-    }
-  };
+  try {
+    this.rootStore.settingsStore.setLoading(true);
+    const response = await authApi.login(credentials);
+    runInAction(() => {
+      this.user = response.user;
+      this.accessToken = response.accessToken;
+      this.isAuth = true;
+      // Токены уже сохраняются в setAuth через setTokens
+    });
+    return response;
+  } catch (error: any) {
+    this.rootStore.settingsStore.setError(error.message || 'Ошибка входа');
+    throw error;
+  } finally {
+    this.rootStore.settingsStore.setLoading(false);
+  }
+};
 
   register = async (data: RegisterUserData) => {
     try {
