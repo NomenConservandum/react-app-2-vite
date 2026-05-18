@@ -1,5 +1,6 @@
 import { makeAutoObservable } from 'mobx';
 import type { RootStore } from '@/shared/lib/mobxStore';
+import Cookies from 'js-cookie';
 
 export type ThemeMode = 'light' | 'dark';
 
@@ -16,15 +17,23 @@ export class ThemeStore {
   private initializeTheme = () => {
     if (typeof window === 'undefined') return;
     
-    // 1. Проверяем сохраненную тему в localStorage
-    const savedTheme = localStorage.getItem('theme') as ThemeMode | null;
+    // 1. Проверяем сохраненную тему в cookies (приоритет)
+    const savedTheme = Cookies.get('theme') as ThemeMode | null;
     if (savedTheme && (savedTheme === 'light' || savedTheme === 'dark')) {
       this.mode = savedTheme;
       this.applyTheme(savedTheme);
       return;
     }
     
-    // 2. Проверяем тему браузера
+    // 2. Проверяем сохраненную тему в localStorage
+    const localTheme = localStorage.getItem('theme') as ThemeMode | null;
+    if (localTheme && (localTheme === 'light' || localTheme === 'dark')) {
+      this.mode = localTheme;
+      this.applyTheme(localTheme);
+      return;
+    }
+    
+    // 3. Проверяем тему браузера
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     const browserTheme = prefersDark ? 'dark' : 'light';
     this.mode = browserTheme;
@@ -41,8 +50,9 @@ export class ThemeStore {
       document.documentElement.classList.remove('dark');
     }
     
-    // Сохраняем в localStorage
+    // Сохраняем в localStorage и cookies
     localStorage.setItem('theme', mode);
+    Cookies.set('theme', mode, { expires: 365, path: '/' });
   };
 
   toggleTheme = () => {

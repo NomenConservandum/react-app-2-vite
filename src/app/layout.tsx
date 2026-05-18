@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { Providers } from './providers';
+import { cookies } from 'next/headers';
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -58,14 +59,24 @@ export const metadata: Metadata = {
   manifest: '/site.webmanifest',
 };
 
-export default function RootLayout({
+// Функция для получения темы из cookies (серверная)
+async function getThemeFromCookies(): Promise<'light' | 'dark'> {
+  const cookieStore = await cookies();
+  const themeCookie = cookieStore.get('theme');
+  return themeCookie?.value === 'dark' ? 'dark' : 'light';
+}
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const theme = await getThemeFromCookies();
+  const themeClass = theme === 'dark' ? 'dark' : '';
+  
   return (
-    <html lang="ru">
-      <body>
+    <html lang="ru" className={themeClass} suppressHydrationWarning>
+      <body suppressHydrationWarning>
         <Providers>
           {children}
         </Providers>
