@@ -231,7 +231,7 @@ const DashboardLayout = observer(({ children }: { children: React.ReactNode }) =
         sx={{
           flexGrow: 1,
           width: { sm: `calc(100% - ${drawerWidth}px)` },
-          bgcolor: 'grey.50',
+          bgcolor: 'background.default',
           minHeight: '100vh',
         }}
       >
