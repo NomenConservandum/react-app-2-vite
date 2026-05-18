@@ -3,7 +3,6 @@
 import React, { useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useStore } from '@/shared/lib/mobxStore';
-import { Box, CircularProgress, Typography } from '@mui/material/';
 import { ROUTES, PRIVATE_ROUTES, PUBLIC_ONLY_ROUTES } from '@/shared/config/routes';
 
 export const useAuth = () => {
@@ -22,16 +21,19 @@ export const useAuth = () => {
   useEffect(() => {
     if (!authStore.isInitialized) return;
 
+    // Защищенные маршруты
     if (isPrivateRoute(pathname) && !authStore.isAuth) {
       router.push(`${ROUTES.LOGIN}?from=${encodeURIComponent(pathname)}`);
       return;
     }
 
+    // Маршруты только для неавторизованных
     if (isPublicOnlyRoute(pathname) && authStore.isAuth) {
       router.push(ROUTES.PROFILE);
       return;
     }
 
+    // Корневой путь - редирект
     if (pathname === ROUTES.HOME) {
       if (authStore.isAuth) {
         router.push(ROUTES.PROFILE);
@@ -51,15 +53,14 @@ export const useAuth = () => {
 export function withAuth<P extends object>(
   WrappedComponent: React.ComponentType<P>
 ) {
-  const ComponentWithAuth = (props: P) => {
+  return function ComponentWithAuth(props: P) {
     const { isAuth, isLoading } = useAuth();
 
     if (isLoading) {
       return (
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-          <CircularProgress />
-          <Typography sx={{ ml: 2 }}>Загрузка...</Typography>
-        </Box>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+          <div>Загрузка...</div>
+        </div>
       );
     }
 
@@ -69,8 +70,4 @@ export function withAuth<P extends object>(
 
     return <WrappedComponent {...props} />;
   };
-
-  ComponentWithAuth.displayName = `withAuth(${WrappedComponent.displayName || WrappedComponent.name || 'Component'})`;
-  
-  return ComponentWithAuth;
 }
