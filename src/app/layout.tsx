@@ -1,12 +1,61 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Providers } from './providers';
-import { baseMetadata } from '@/shared/config/metadata';
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: '#1976d2',
+};
 
 export const metadata: Metadata = {
-  ...baseMetadata,
-  title: 'Quote App',
-  description: 'Платформа для обмена цитатами',
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
+  title: {
+    default: 'Quote App',
+    template: '%s | Quote App',
+  },
+  description: 'Платформа для обмена цитатами и вдохновляющими мыслями',
+  keywords: ['цитаты', 'вдохновение', 'мотивация', 'quotes', 'inspiration'],
+  authors: [{ name: 'Quote App Team' }],
+  creator: 'Quote App',
+  publisher: 'Quote App',
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  openGraph: {
+    title: 'Quote App',
+    description: 'Платформа для обмена цитатами',
+    url: 'https://quote-app.com',
+    siteName: 'Quote App',
+    locale: 'ru_RU',
+    type: 'website',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'Quote App',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Quote App',
+    description: 'Платформа для обмена цитатами',
+    images: ['/twitter-image.png'],
+  },
+  icons: {
+    icon: '/favicon.ico',
+    shortcut: '/favicon-16x16.png',
+    apple: '/apple-touch-icon.png',
+  },
+  manifest: '/site.webmanifest',
 };
 
 export default function RootLayout({
