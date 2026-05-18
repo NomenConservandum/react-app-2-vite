@@ -34,8 +34,10 @@ const processQueue = (error: any | null, token: string | null = null) => {
 api.interceptors.request.use(
   (config) => {
     const token = getAccessToken();
+    console.log('Axios interceptor - token exists:', !!token);
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+      console.log('Axios interceptor - Authorization header set');
     }
     return config;
   },
@@ -48,6 +50,7 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
+    console.error('Axios response error:', error.response?.status, error.response?.data);
     const originalRequest = error.config;
     
     // Если ошибка не 401 или запрос уже повторялся

@@ -4,6 +4,8 @@ import { baseMetadata } from '@/shared/config/metadata';
 
 export const metadata: Metadata = {
   ...baseMetadata,
+  title: 'Quote App',
+  description: 'Платформа для обмена цитатами',
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
 };
 

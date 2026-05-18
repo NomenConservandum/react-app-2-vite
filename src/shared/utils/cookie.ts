@@ -1,35 +1,44 @@
 import Cookies from 'js-cookie';
 
-// Ключи для хранения в cookies
 const TOKEN_KEY = 'accessToken';
 const REFRESH_TOKEN_KEY = 'refreshToken';
 
-// Сохранение токенов
-export const setTokens = (accessToken: string, refreshToken: string): void => {
-  Cookies.set(TOKEN_KEY, accessToken, { 
+export const setTokens = (accessToken: string, refreshToken?: string): void => {
+  console.log('Setting token, length:', accessToken.length);
+  
+  // Убедимся, что токен сохраняется для всех путей
+  Cookies.set(TOKEN_KEY, accessToken, {
     expires: 1, // 1 день
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
+    secure: false, // В разработке используем false
+    sameSite: 'lax', // Изменено с 'strict' на 'lax'
+    path: '/', // Важно: для всех путей
   });
-  Cookies.set(REFRESH_TOKEN_KEY, refreshToken, {
-    expires: 7, // 7 дней
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
-  });
+  
+  if (refreshToken) {
+    Cookies.set(REFRESH_TOKEN_KEY, refreshToken, {
+      expires: 7,
+      secure: false,
+      sameSite: 'lax',
+      path: '/',
+    });
+  }
+  
+  // Проверим, что токен сохранился
+  const savedToken = Cookies.get(TOKEN_KEY);
+  console.log('Token saved successfully:', !!savedToken);
 };
 
-// Получение access токена
 export const getAccessToken = (): string | undefined => {
-  return Cookies.get(TOKEN_KEY);
+  const token = Cookies.get(TOKEN_KEY);
+  console.log('Getting token from cookie:', token ? `present (${token.length} chars)` : 'not found');
+  return token;
 };
 
-// Получение refresh токена
 export const getRefreshToken = (): string | undefined => {
   return Cookies.get(REFRESH_TOKEN_KEY);
 };
 
-// Удаление токенов (при выходе)
 export const removeTokens = (): void => {
-  Cookies.remove(TOKEN_KEY);
-  Cookies.remove(REFRESH_TOKEN_KEY);
+  Cookies.remove(TOKEN_KEY, { path: '/' });
+  Cookies.remove(REFRESH_TOKEN_KEY, { path: '/' });
 };

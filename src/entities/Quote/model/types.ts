@@ -12,3 +12,13 @@ export interface GetQuotesRequest {
   offset: number;
   limit: number;
 }
+
+export interface QuoteWithId extends QuoteResponse {
+  id?: number;
+}
+
+export interface QuotesListResponse {
+  quotes: QuoteResponse[];
+  totalCount: number;
+  hasMore: boolean;
+}
