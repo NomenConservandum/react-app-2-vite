@@ -12,7 +12,7 @@ export default function RootError({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error('Application error:', error);
+    console.log('Application error:', error);
   }, [error]);
 
   return (

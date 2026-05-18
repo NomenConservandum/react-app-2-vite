@@ -50,7 +50,7 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-    console.error('Axios response error:', error.response?.status, error.response?.data);
+    console.log('Axios response error:', error.response?.status, error.response?.data);
     const originalRequest = error.config;
     
     // Если ошибка не 401 или запрос уже повторялся
