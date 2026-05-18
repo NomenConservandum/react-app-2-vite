@@ -1,5 +1,6 @@
 'use client';
 
+import { ThemeSwitcher } from '@/widgets/ThemeSwitcher';
 import React, { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { observer } from 'mobx-react-lite';
@@ -165,6 +166,7 @@ const DashboardLayout = observer(({ children }: { children: React.ReactNode }) =
           </Typography>
           
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <ThemeSwitcher />
             <Typography variant="body2" sx={{ display: { xs: 'none', sm: 'block' } }}>
               {user?.firstName || 'Пользователь'}
             </Typography>

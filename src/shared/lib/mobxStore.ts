@@ -2,23 +2,22 @@ import { AuthStore } from '@/features/auth/model/AuthStore';
 import { QuotesStore } from '@/features/quotes/model/QuotesStore';
 import { UserStore } from '@/features/user/model/UserStore';
 import { SettingsStore } from '@/features/settings/model/SettingsStore';
+import { ThemeStore } from '@/features/theme/model/ThemeStore';
 import React from 'react';
 
-// Корневой класс Store - собирает все дочерние store'ы
-// Реализует паттерн Service Locator
 export class RootStore {
   authStore: AuthStore;
   quotesStore: QuotesStore;
   userStore: UserStore;
   settingsStore: SettingsStore;
+  themeStore: ThemeStore;
 
   constructor() {
-    // Передаем this (корневой store) во все дочерние store'ы
-    // Это позволяет им взаимодействовать друг с другом
     this.authStore = new AuthStore(this);
     this.quotesStore = new QuotesStore(this);
     this.userStore = new UserStore(this);
     this.settingsStore = new SettingsStore(this);
+    this.themeStore = new ThemeStore(this);
   }
 }
 
