@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
+import { cookies } from 'next/headers';
 import { Container, Typography, Button, Box } from '@mui/material';
 import { ROUTES } from '@/shared/config/routes';
 
@@ -13,7 +15,17 @@ export const metadata: Metadata = {
   },
 };
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  // Серверная проверка авторизации
+  const cookieStore = await cookies();
+  const token = cookieStore.get('accessToken')?.value;
+  
+  // Если пользователь уже авторизован, перенаправляем в профиль
+  if (token) {
+    redirect(ROUTES.PROFILE);
+  }
+  
+  // Для неавторизованных показываем лендинг
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
       <Box

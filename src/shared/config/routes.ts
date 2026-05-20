@@ -15,7 +15,7 @@ export const ROUTES = {
   NOT_FOUND: '/404',
 } as const;
 
-// Маршруты, требующие авторизации (полное совпадение или начинающиеся с пути)
+// Маршруты, требующие авторизации
 export const PRIVATE_ROUTES = [
   ROUTES.PROFILE,
   ROUTES.QUOTES,
@@ -23,11 +23,17 @@ export const PRIVATE_ROUTES = [
   ROUTES.QUOTES_CREATE,
 ] as const;
 
-// Маршруты только для неавторизованных пользователей
+// Маршруты только для НЕавторизованных пользователей
 export const PUBLIC_ONLY_ROUTES = [
   ROUTES.LOGIN,
   ROUTES.REGISTER,
 ] as const;
 
-// Тип для маршрутов
+// Все публичные маршруты (для общего доступа, но не авторизованным)
+export const PUBLIC_ROUTES = [
+  ROUTES.LANDING,
+  ROUTES.LOGIN,
+  ROUTES.REGISTER,
+] as const;
+
 export type AppRoute = typeof ROUTES[keyof typeof ROUTES];

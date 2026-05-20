@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useStore } from '@/shared/lib/mobxStore';
-import { ROUTES, PRIVATE_ROUTES, PUBLIC_ONLY_ROUTES } from '@/shared/config/routes';
+import { ROUTES, PRIVATE_ROUTES, PUBLIC_ONLY_ROUTES, PUBLIC_ROUTES } from '@/shared/config/routes';
 
 export const useAuth = () => {
   const { authStore } = useStore();
@@ -18,28 +18,29 @@ export const useAuth = () => {
     return PUBLIC_ONLY_ROUTES.some(route => path.startsWith(route));
   };
 
+  const isPublicRoute = (path: string): boolean => {
+    return PUBLIC_ROUTES.some(route => path === route);
+  };
+
   useEffect(() => {
     if (!authStore.isInitialized) return;
 
+    // Если пользователь авторизован и пытается зайти на страницы для неавторизованных
+    if (authStore.isAuth && isPublicOnlyRoute(pathname)) {
+      router.replace(ROUTES.PROFILE);
+      return;
+    }
+
     // Защищенные маршруты
     if (isPrivateRoute(pathname) && !authStore.isAuth) {
-      router.push(`${ROUTES.LOGIN}?from=${encodeURIComponent(pathname)}`);
+      router.replace(`${ROUTES.LOGIN}?from=${encodeURIComponent(pathname)}`);
       return;
     }
 
-    // Маршруты только для неавторизованных
-    if (isPublicOnlyRoute(pathname) && authStore.isAuth) {
-      router.push(ROUTES.PROFILE);
+    // Лендинг (корневая страница для неавторизованных)
+    if (pathname === ROUTES.LANDING && authStore.isAuth) {
+      router.replace(ROUTES.PROFILE);
       return;
-    }
-
-    // Корневой путь - редирект
-    if (pathname === ROUTES.HOME) {
-      if (authStore.isAuth) {
-        router.push(ROUTES.PROFILE);
-      } else {
-        router.push(ROUTES.LANDING);
-      }
     }
   }, [pathname, authStore.isAuth, authStore.isInitialized, router]);
 
