@@ -1,6 +1,6 @@
 'use client';
 
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { StoreContext, rootStore } from '@/shared/lib/mobxStore';
@@ -17,29 +17,13 @@ export const Providers = observer(({ children }: { children: React.ReactNode }) 
     setMounted(true);
   }, []);
   
-  const theme = themeStore.mode === 'light' ? lightTheme : darkTheme;
+  const theme = !mounted ? lightTheme : (themeStore.mode === 'light' ? lightTheme : darkTheme);
   
-  // На сервере используем светлую тему для предотвращения hydration ошибки
-  if (!mounted) {
-    return (
-      <AppRouterCacheProvider options={{ key: 'css' }}>
-        <StoreContext.Provider value={rootStore}>
-          <ThemeProvider theme={lightTheme}>
-            <CssBaseline />
-            <CommonWrapper>
-              {children}
-            </CommonWrapper>
-          </ThemeProvider>
-        </StoreContext.Provider>
-      </AppRouterCacheProvider>
-    );
-  }
-
   return (
     <AppRouterCacheProvider options={{ key: 'css' }}>
       <StoreContext.Provider value={rootStore}>
         <ThemeProvider theme={theme}>
-          <CssBaseline />
+          <CssBaseline enableColorScheme />
           <CommonWrapper>
             {children}
           </CommonWrapper>
