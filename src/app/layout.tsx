@@ -63,23 +63,61 @@ export const metadata: Metadata = {
 async function getThemeFromCookies(): Promise<'light' | 'dark'> {
   const cookieStore = await cookies();
   const themeCookie = cookieStore.get('theme');
-  return themeCookie?.value === 'dark' ? 'dark' : 'light';
+  
+  // Если есть сохраненная тема в cookies, используем её
+  if (themeCookie?.value === 'dark' || themeCookie?.value === 'light') {
+    return themeCookie.value;
+  }
+  
+  // Если нет сохраненной темы, определяем по заголовку Accept-Language?
+  // На сервере нет информации о предпочтениях темы браузера,
+  // поэтому возвращаем светлую тему (или можно dark по умолчанию)
+  // При первой загрузке клиент сам определит тему и сохранит в cookies
+  return 'light';
 }
 
 export default async function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
-  const theme = await getThemeFromCookies();
-  const themeClass = theme === 'dark' ? 'dark' : '';
+}) {
+  const cookieStore = await cookies();
+  const savedTheme = cookieStore.get('theme')?.value;
+  // Сервер использует сохранённую тему, если есть
+  const themeClass = savedTheme === 'dark' ? 'dark' : '';
   
   return (
     <html lang="ru" className={themeClass} suppressHydrationWarning>
+      <head>
+        {/* Инлайн-скрипт определяет тему до рендеринга */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  // 1. Проверяем сохранённую тему в localStorage
+                  let theme = localStorage.getItem('theme');
+                  if (!theme) {
+                    // 2. Определяем системную тему
+                    theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                    // Сохраняем для будущих посещений (опционально)
+                    localStorage.setItem('theme', theme);
+                    document.cookie = 'theme=' + theme + '; path=/; max-age=31536000';
+                  }
+                  // Применяем класс к html
+                  if (theme === 'dark') {
+                    document.documentElement.classList.add('dark');
+                  } else {
+                    document.documentElement.classList.remove('dark');
+                  }
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
       <body suppressHydrationWarning>
-        <Providers>
-          {children}
-        </Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
