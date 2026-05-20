@@ -2,13 +2,13 @@
 
 import { useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import { useStore } from '@/shared/lib/mobxStore';
+import { useStore } from '@/shared/store';
 import { observer } from 'mobx-react-lite';
 import { CircularProgress, Box } from '@mui/material';
 
 interface AuthGuardProps {
   children: React.ReactNode;
-  requireAuth?: boolean; // true - требует авторизации, false - только для неавторизованных
+  requireAuth?: boolean;
   redirectTo?: string;
 }
 
@@ -17,24 +17,23 @@ export const AuthGuard = observer(({
   requireAuth = true,
   redirectTo = '/login'
 }: AuthGuardProps) => {
-  const { authStore } = useStore();
+  const { userStore } = useStore();  // Изменено с authStore на userStore
   const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
-    if (!authStore.isInitialized) return;
+    if (!userStore.isInitialized) return;
 
-    if (requireAuth && !authStore.isAuth) {
+    if (requireAuth && !userStore.isAuth) {
       router.push(`${redirectTo}?from=${encodeURIComponent(pathname)}`);
     }
 
-    if (!requireAuth && authStore.isAuth) {
+    if (!requireAuth && userStore.isAuth) {
       router.push('/profile');
     }
-  }, [authStore.isAuth, authStore.isInitialized, requireAuth, router, pathname, redirectTo]);
+  }, [userStore.isAuth, userStore.isInitialized, requireAuth, router, pathname, redirectTo]);
 
-  // Показываем загрузку только если store инициализируется
-  if (!authStore.isInitialized) {
+  if (!userStore.isInitialized) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
         <CircularProgress />
@@ -42,15 +41,13 @@ export const AuthGuard = observer(({
     );
   }
 
-  // Если условие не выполняется, показываем children
-  if (requireAuth && authStore.isAuth) {
+  if (requireAuth && userStore.isAuth) {
     return <>{children}</>;
   }
 
-  if (!requireAuth && !authStore.isAuth) {
+  if (!requireAuth && !userStore.isAuth) {
     return <>{children}</>;
   }
 
-  // Во всех остальных случаях показываем null (редирект произойдет в useEffect)
   return null;
 });

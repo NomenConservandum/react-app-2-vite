@@ -1,19 +1,20 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { observer } from 'mobx-react-lite';
 import { Container, Paper, Typography, TextField, Box, Alert } from '@mui/material';
 import { AddComment } from '@mui/icons-material';
-import { useStore } from '@/shared/lib/mobxStore';
+import { useStore } from '@/shared/store';
 import { CustomButton } from '@/shared/ui';
 import { ROUTES } from '@/shared/config/routes';
 
-const CreateQuotePage = observer(() => {
+const CreateQuoteClient = observer(() => {
   const router = useRouter();
   const { quotesStore, settingsStore } = useStore();
   const [newQuoteText, setNewQuoteText] = useState('');
   const [localError, setLocalError] = useState<string | null>(null);
+  const { isLoading } = quotesStore;
 
   const handlePublish = async () => {
     if (!newQuoteText.trim()) {
@@ -41,7 +42,6 @@ const CreateQuotePage = observer(() => {
       <Paper elevation={2} sx={{ p: 4, borderRadius: 4, bgcolor: 'action.hover' }}>
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 3, gap: 1 }}>
           <AddComment color="primary" />
-          {/* Исправленный Typography */}
           <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
             Поделиться своей цитатой
           </Typography>
@@ -60,7 +60,7 @@ const CreateQuotePage = observer(() => {
           placeholder="Что у вас на уме? Поделитесь мудрой мыслью..."
           value={newQuoteText}
           onChange={(e) => setNewQuoteText(e.target.value)}
-          disabled={settingsStore.isLoading}
+          disabled={isLoading}
           sx={{ mb: 3 }}
           helperText={`${newQuoteText.length}/500 символов`}
           error={newQuoteText.length > 500}
@@ -70,17 +70,17 @@ const CreateQuotePage = observer(() => {
           <CustomButton
             variant="outlined"
             onClick={() => router.back()}
-            disabled={settingsStore.isLoading}
+            disabled={isLoading}
             tooltipText="Отменить публикацию"
           >
             Отмена
           </CustomButton>
           <CustomButton
             onClick={handlePublish}
-            disabled={settingsStore.isLoading || !newQuoteText.trim() || newQuoteText.length > 500}
+            disabled={isLoading || !newQuoteText.trim() || newQuoteText.length > 500}
             tooltipText="Опубликовать цитату"
           >
-            {settingsStore.isLoading ? 'Публикация...' : 'Опубликовать'}
+            {isLoading ? 'Публикация...' : 'Опубликовать'}
           </CustomButton>
         </Box>
       </Paper>
@@ -88,4 +88,4 @@ const CreateQuotePage = observer(() => {
   );
 });
 
-export default CreateQuotePage;
+export default CreateQuoteClient;

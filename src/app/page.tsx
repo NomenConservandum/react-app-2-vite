@@ -2,23 +2,23 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useStore } from '@/shared/lib/mobxStore';
+import { useStore } from '@/shared/store';
 import { ROUTES } from '@/shared/config/routes';
 import { observer } from 'mobx-react-lite';
 
 const HomePage = observer(() => {
   const router = useRouter();
-  const { authStore } = useStore();
+  const { userStore } = useStore();
   
   useEffect(() => {
-    if (!authStore.isInitialized) return;
+    if (!userStore.isInitialized) return;
     
-    if (authStore.isAuth) {
+    if (userStore.isAuth) {
       router.replace(ROUTES.PROFILE);
     } else {
       router.replace(ROUTES.LANDING);
     }
-  }, [authStore.isAuth, authStore.isInitialized, router]);
+  }, [userStore.isAuth, userStore.isInitialized, router]);
   
   return (
     <div style={{ 
@@ -26,8 +26,7 @@ const HomePage = observer(() => {
       justifyContent: 'center', 
       alignItems: 'center', 
       height: '100vh',
-      backgroundColor: '#f5f5f5',
-      fontFamily: 'system-ui, sans-serif'
+      backgroundColor: '#f5f5f5'
     }}>
       <div>Загрузка...</div>
     </div>

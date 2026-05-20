@@ -1,6 +1,5 @@
 'use client';
 
-import { ThemeSwitcher } from '@/widgets/ThemeSwitcher';
 import React, { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { observer } from 'mobx-react-lite';
@@ -31,7 +30,8 @@ import {
   Logout,
   AccountCircle,
 } from '@mui/icons-material';
-import { useStore } from '@/shared/lib/mobxStore';
+import { useStore } from '@/shared/store';
+import { ThemeSwitcher } from '@/widgets/ThemeSwitcher';
 import { ROUTES } from '@/shared/config/routes';
 
 const drawerWidth = 260;
@@ -43,7 +43,7 @@ const menuItems = [
 ];
 
 const DashboardLayout = observer(({ children }: { children: React.ReactNode }) => {
-  const { authStore, userStore } = useStore();
+  const { userStore } = useStore();
   const router = useRouter();
   const pathname = usePathname();
   
@@ -51,23 +51,21 @@ const DashboardLayout = observer(({ children }: { children: React.ReactNode }) =
   const [mobileOpen, setMobileOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   
-  const isAuthenticated = authStore.isAuth;
-  const user = userStore.profile || authStore.user;
+  const isAuthenticated = userStore.isAuth;
+  const user = userStore.user;
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
   useEffect(() => {
-    if (!authStore.isInitialized) return;
-  
-    console.log('DashboardLayout - isAuth:', authStore.isAuth, 'isInitialized:', authStore.isInitialized);
+    if (!userStore.isInitialized) return;
     
-    if (!authStore.isAuth) {
+    if (!isAuthenticated) {
       router.push(ROUTES.LOGIN);
       return;
     }
-  }, [isAuthenticated, router, userStore, authStore.user, authStore.isInitialized]);
+  }, [isAuthenticated, userStore.isInitialized, router]);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -83,7 +81,7 @@ const DashboardLayout = observer(({ children }: { children: React.ReactNode }) =
 
   const handleLogout = () => {
     handleMenuClose();
-    authStore.logout();
+    userStore.logout();
     router.push(ROUTES.LANDING);
   };
 
@@ -127,8 +125,7 @@ const DashboardLayout = observer(({ children }: { children: React.ReactNode }) =
     </Box>
   );
 
-  // Показываем null на сервере или до монтирования
-  if (!isMounted || !authStore.isInitialized) {
+  if (!isMounted || !userStore.isInitialized) {
     return null;
   }
 

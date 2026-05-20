@@ -1,18 +1,16 @@
 'use client';
 
 import { observer } from 'mobx-react-lite';
-import { IconButton, Tooltip, useTheme } from '@mui/material';
+import { IconButton, Tooltip } from '@mui/material';
 import { Brightness4, Brightness7 } from '@mui/icons-material';
-import { useStore } from '@/shared/lib/mobxStore';
+import { useStore } from '@/shared/store';
 
 export const ThemeSwitcher = observer(() => {
-  const { themeStore } = useStore();
-  const theme = useTheme();
-  
-  const isDark = theme.palette.mode === 'dark';
+  const { settingsStore } = useStore();
+  const isDark = settingsStore.isDarkTheme;
   
   const handleToggle = () => {
-    themeStore.toggleTheme();
+    settingsStore.toggleTheme();
   };
   
   return (

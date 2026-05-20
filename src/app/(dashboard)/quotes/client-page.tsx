@@ -1,25 +1,25 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import { Container, Typography, Box, Grid, Divider, Button } from '@mui/material';
 import { History, Refresh } from '@mui/icons-material';
-import { useStore } from '@/shared/lib/mobxStore';
+import { useStore } from '@/shared/store';
 import { QuoteCard } from '@/shared/ui/QuoteCard';
 import { Loader } from '@/shared/ui/Loader';
 
-const QuotesListPage = observer(() => {
+const QuotesListClient = observer(() => {
   const { quotesStore, settingsStore } = useStore();
-  const { allQuotes, hasMore, currentOffset } = quotesStore;
+  const { allQuotes, hasMore, currentOffset, isLoading } = quotesStore;
 
   useEffect(() => {
-    if (allQuotes.length === 0) {
+    if (allQuotes.length === 0 && !isLoading) {
       quotesStore.fetchQuotesList(0, 10);
     }
-  }, [quotesStore, allQuotes.length]);
+  }, [quotesStore, allQuotes.length, isLoading]);
 
   const handleLoadMore = () => {
-    if (hasMore && !settingsStore.isLoading) {
+    if (hasMore && !isLoading) {
       quotesStore.fetchQuotesList(currentOffset + 10, 10);
     }
   };
@@ -28,7 +28,7 @@ const QuotesListPage = observer(() => {
     quotesStore.fetchQuotesList(0, 10);
   };
 
-  if (settingsStore.isLoading && allQuotes.length === 0) {
+  if (isLoading && allQuotes.length === 0) {
     return <Loader fullScreen />;
   }
 
@@ -37,7 +37,9 @@ const QuotesListPage = observer(() => {
       <Divider sx={{ mb: 4 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: 'text.disabled' }}>
           <History fontSize="large" />
-          <Typography variant="h4">ЛЕНТА ЦИТАТ</Typography>
+          <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+            ЛЕНТА ЦИТАТ
+          </Typography>
         </Box>
       </Divider>
 
@@ -45,15 +47,15 @@ const QuotesListPage = observer(() => {
         <Button
           startIcon={<Refresh />}
           onClick={handleRefresh}
-          disabled={settingsStore.isLoading}
+          disabled={isLoading}
           size="small"
         >
           Обновить
         </Button>
       </Box>
 
-      {allQuotes.length === 0 && !settingsStore.isLoading ? (
-        <Typography align="center" sx={{ py: 8 }} color="text.secondary">
+      {allQuotes.length === 0 && !isLoading ? (
+        <Typography align="center" sx={{ py: 8, color: 'text.secondary' }}>
           Пока нет ни одной цитаты. Будьте первым!
         </Typography>
       ) : (
@@ -70,13 +72,13 @@ const QuotesListPage = observer(() => {
             {hasMore ? (
               <Button
                 onClick={handleLoadMore}
-                disabled={settingsStore.isLoading}
+                disabled={isLoading}
                 variant="text"
               >
-                {settingsStore.isLoading ? 'Загрузка...' : 'Загрузить еще'}
+                {isLoading ? 'Загрузка...' : 'Загрузить еще'}
               </Button>
             ) : (
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                 Вы просмотрели все цитаты
               </Typography>
             )}
@@ -87,4 +89,4 @@ const QuotesListPage = observer(() => {
   );
 });
 
-export default QuotesListPage;
+export default QuotesListClient;

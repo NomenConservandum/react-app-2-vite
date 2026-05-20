@@ -15,15 +15,14 @@ import {
   IconButton,
 } from '@mui/material';
 import { Visibility, VisibilityOff, Login as LoginIcon } from '@mui/icons-material';
-import { useStore } from '@/shared/lib/mobxStore';
+import { useStore } from '@/shared/store';
 import { CustomButton } from '@/shared/ui';
 import { ROUTES } from '@/shared/config/routes';
 
-// Компонент, который использует useSearchParams
 const LoginForm = observer(() => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { authStore, settingsStore } = useStore();
+  const { userStore, settingsStore } = useStore();
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -42,7 +41,7 @@ const LoginForm = observer(() => {
     }
     
     try {
-      await authStore.login({ email, password });
+      await userStore.login({ email, password });
       router.push(from);
     } catch (err: any) {
       setLocalError(err.response?.data?.message || 'Неверный email или пароль');
@@ -125,7 +124,6 @@ const LoginForm = observer(() => {
   );
 });
 
-// Основной компонент страницы с Suspense
 export default function LoginPage() {
   return (
     <Suspense fallback={

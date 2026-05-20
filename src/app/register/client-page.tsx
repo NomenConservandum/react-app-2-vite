@@ -15,13 +15,13 @@ import {
   IconButton,
 } from '@mui/material';
 import { Visibility, VisibilityOff, PersonAdd } from '@mui/icons-material';
-import { useStore } from '@/shared/lib/mobxStore';
+import { useStore } from '@/shared/store';
 import { CustomButton } from '@/shared/ui';
 import { ROUTES } from '@/shared/config/routes';
 
-const RegisterPage = observer(() => {
+const RegisterForm = observer(() => {
   const router = useRouter();
-  const { authStore, settingsStore } = useStore();
+  const { userStore, settingsStore } = useStore();
   
   const [formData, setFormData] = useState({
     firstName: '',
@@ -54,7 +54,7 @@ const RegisterPage = observer(() => {
     }
     
     try {
-      await authStore.register(formData);
+      await userStore.register(formData);
       router.push(`${ROUTES.LOGIN}?registered=true`);
     } catch (err: any) {
       setLocalError(err.response?.data?.message || 'Ошибка регистрации');
@@ -66,11 +66,7 @@ const RegisterPage = observer(() => {
       <Paper elevation={3} sx={{ p: 4, borderRadius: 3 }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 3 }}>
           <PersonAdd color="primary" sx={{ fontSize: 40, mb: 1 }} />
-          <Typography 
-            variant="h4" 
-            component="h1"
-            sx={{ fontWeight: 'bold' }}
-          >
+          <Typography variant="h4" component="h1" sx={{ fontWeight: 'bold' }}>
             Регистрация
           </Typography>
         </Box>
@@ -169,4 +165,6 @@ const RegisterPage = observer(() => {
   );
 });
 
-export default RegisterPage;
+export default function RegisterPage() {
+  return <RegisterForm />;
+}

@@ -3,7 +3,7 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
 import { Snackbar, Alert, Backdrop, CircularProgress, Box } from '@mui/material';
-import { useStore } from '@/shared/lib/mobxStore';
+import { useStore } from '@/shared/store';
 
 interface CommonWrapperProps {
   children: React.ReactNode;
@@ -14,7 +14,7 @@ export const CommonWrapper = observer(({ children }: CommonWrapperProps) => {
   const { isLoading, error } = settingsStore;
 
   const handleCloseError = () => {
-    settingsStore.setError(null);
+    settingsStore.clearError();
   };
 
   return (

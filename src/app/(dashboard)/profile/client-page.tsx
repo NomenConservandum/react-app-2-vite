@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useRouter } from 'next/navigation';
 import { observer } from 'mobx-react-lite';
 import {
@@ -17,20 +17,19 @@ import {
   Skeleton,
 } from '@mui/material';
 import { MenuBook, AutoFixHigh, AddCircle, Logout } from '@mui/icons-material';
-import { useStore } from '@/shared/lib/mobxStore';
+import { useStore } from '@/shared/store';
 import { CustomButton } from '@/shared/ui';
 import { ROUTES } from '@/shared/config/routes';
 
 const ProfilePageClient = observer(() => {
   const router = useRouter();
-  const { authStore, settingsStore } = useStore();
+  const { userStore, settingsStore } = useStore();
 
-  // Данные профиля хранятся в authStore.user
-  const profile = authStore.user;
-  const isLoading = !authStore.isInitialized || settingsStore.isLoading;
+  const profile = userStore.user;
+  const isLoading = !userStore.isInitialized || settingsStore.isLoading;
 
   const handleLogout = () => {
-    authStore.logout();
+    userStore.logout();
     router.push(ROUTES.LANDING);
   };
 

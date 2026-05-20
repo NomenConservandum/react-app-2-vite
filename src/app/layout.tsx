@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { Providers } from './providers';
+import { Providers } from '@/widgets/Providers';
 import { cookies } from 'next/headers';
 
 export const viewport: Viewport = {
