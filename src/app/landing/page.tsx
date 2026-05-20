@@ -38,24 +38,24 @@ export default function LandingPage() {
             Платформа для обмена цитатами. Делитесь мыслями и вдохновляйтесь идеями других.
           </Typography>
           <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Button
-              component={Link}
-              href={ROUTES.REGISTER}
-              variant="contained"
-              size="large"
-              sx={{ bgcolor: 'white', color: 'primary.main', '&:hover': { bgcolor: 'grey.100' } }}
-            >
-              Начать обмен цитатами
-            </Button>
-            <Button
-              component={Link}
-              href={ROUTES.LOGIN}
-              variant="outlined"
-              size="large"
-              sx={{ borderColor: 'white', color: 'white', '&:hover': { borderColor: 'grey.300', bgcolor: 'rgba(255,255,255,0.1)' } }}
-            >
-              У меня есть профиль
-            </Button>
+            <Link href={ROUTES.REGISTER} style={{ textDecoration: 'none' }}>
+              <Button
+                variant="contained"
+                size="large"
+                sx={{ bgcolor: 'white', color: 'primary.main', '&:hover': { bgcolor: 'grey.100' } }}
+              >
+                Начать обмен цитатами
+              </Button>
+            </Link>
+            <Link href={ROUTES.LOGIN} style={{ textDecoration: 'none' }}>
+              <Button
+                variant="outlined"
+                size="large"
+                sx={{ borderColor: 'white', color: 'white', '&:hover': { borderColor: 'grey.300', bgcolor: 'rgba(255,255,255,0.1)' } }}
+              >
+                У меня есть профиль
+              </Button>
+            </Link>
           </Box>
         </Container>
       </Box>

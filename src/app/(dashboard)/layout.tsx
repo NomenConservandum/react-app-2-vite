@@ -60,14 +60,12 @@ const DashboardLayout = observer(({ children }: { children: React.ReactNode }) =
 
   useEffect(() => {
     if (!authStore.isInitialized) return;
+  
+    console.log('DashboardLayout - isAuth:', authStore.isAuth, 'isInitialized:', authStore.isInitialized);
     
-    if (!isAuthenticated) {
+    if (!authStore.isAuth) {
       router.push(ROUTES.LOGIN);
       return;
-    }
-    
-    if (!userStore.profile && authStore.user) {
-      userStore.fetchProfile();
     }
   }, [isAuthenticated, router, userStore, authStore.user, authStore.isInitialized]);
 

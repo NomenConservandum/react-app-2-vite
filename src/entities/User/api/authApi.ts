@@ -29,7 +29,7 @@ export const authApi = {
       console.log('Profile response (User/myprofile):', response.data);
       return response.data;
     } catch (error) {
-      console.log('User/myprofile failed:', error);
+      console.error('User/myprofile failed:', error);
       throw error;
     }
   },

@@ -21,15 +21,13 @@ import { useStore } from '@/shared/lib/mobxStore';
 import { CustomButton } from '@/shared/ui';
 import { ROUTES } from '@/shared/config/routes';
 
-const ProfilePage = observer(() => {
+const ProfilePageClient = observer(() => {
   const router = useRouter();
-  const { authStore, userStore, settingsStore } = useStore();
+  const { authStore, settingsStore } = useStore();
 
-  useEffect(() => {
-    if (authStore.isAuth && !userStore.profile) {
-      userStore.fetchProfile();
-    }
-  }, [authStore.isAuth, userStore]);
+  // Данные профиля хранятся в authStore.user
+  const profile = authStore.user;
+  const isLoading = !authStore.isInitialized || settingsStore.isLoading;
 
   const handleLogout = () => {
     authStore.logout();
@@ -60,8 +58,6 @@ const ProfilePage = observer(() => {
     },
   ];
 
-  const isLoading = !authStore.isInitialized || settingsStore.isLoading;
-  const profile = userStore.profile || authStore.user;
   const fullName = profile
     ? `${profile.firstName || ''} ${profile.secondName || ''}`.trim()
     : 'Пользователь';
@@ -81,23 +77,15 @@ const ProfilePage = observer(() => {
               {fullName.charAt(0).toUpperCase() || 'U'}
             </Avatar>
           )}
-          
-          {/* Исправленный Typography */}
-          <Typography 
-            variant="h4" 
-            component="h1"
-            sx={{ fontWeight: 'bold' }}
-          >
+
+          <Typography variant="h4" component="h1" sx={{ fontWeight: 'bold' }}>
             {isLoading && !profile ? <Skeleton width={200} /> : fullName}
           </Typography>
-          
-          <Typography 
-            variant="body1" 
-            sx={{ color: 'text.secondary', mb: 3 }}
-          >
+
+          <Typography variant="body1" sx={{ color: 'text.secondary', mb: 3 }}>
             {isLoading && !profile ? <Skeleton width={150} /> : userEmail}
           </Typography>
-          
+
           <CustomButton
             variant="outlined"
             color="error"
@@ -110,10 +98,7 @@ const ProfilePage = observer(() => {
         </Box>
       </Paper>
 
-      <Typography 
-        variant="h5" 
-        sx={{ mb: 3, fontWeight: 'bold' }}
-      >
+      <Typography variant="h5" sx={{ mb: 3, fontWeight: 'bold' }}>
         Управление контентом
       </Typography>
 
@@ -142,10 +127,7 @@ const ProfilePage = observer(() => {
                   >
                     {item.icon}
                   </Box>
-                  <Typography 
-                    variant="h6" 
-                    sx={{ fontWeight: 'bold', mb: 1 }}
-                  >
+                  <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 1 }}>
                     {item.title}
                   </Typography>
                   <Typography variant="body2" sx={{ color: 'text.secondary' }}>
@@ -159,7 +141,7 @@ const ProfilePage = observer(() => {
       </Grid>
 
       <Divider sx={{ my: 6 }} />
-      
+
       <Box sx={{ p: 3, bgcolor: 'action.hover', borderRadius: 4, textAlign: 'center' }}>
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
           ID аккаунта: {userId}
@@ -169,4 +151,4 @@ const ProfilePage = observer(() => {
   );
 });
 
-export default ProfilePage;
+export default ProfilePageClient;
