@@ -69,7 +69,6 @@ async function getThemeFromCookies(): Promise<'light' | 'dark'> {
     return themeCookie.value;
   }
   
-  // Если нет сохраненной темы, определяем по заголовку Accept-Language?
   // На сервере нет информации о предпочтениях темы браузера,
   // поэтому возвращаем светлую тему (или можно dark по умолчанию)
   // При первой загрузке клиент сам определит тему и сохранит в cookies
@@ -83,7 +82,6 @@ export default async function RootLayout({
 }) {
   const cookieStore = await cookies();
   const savedTheme = cookieStore.get('theme')?.value;
-  // Сервер использует сохранённую тему, если есть
   const themeClass = savedTheme === 'dark' ? 'dark' : '';
   
   return (
