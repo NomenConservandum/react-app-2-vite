@@ -22,18 +22,18 @@ export const AuthGuard = observer(({
   const pathname = usePathname();
 
   useEffect(() => {
-    if (!userStore.isInitialized) return;
+    if (!userStore.state.isInitialized) return;
 
-    if (requireAuth && !userStore.isAuth) {
+    if (requireAuth && !userStore.state.isAuth) {
       router.push(`${redirectTo}?from=${encodeURIComponent(pathname)}`);
     }
 
-    if (!requireAuth && userStore.isAuth) {
+    if (!requireAuth && userStore.state.isAuth) {
       router.push('/profile');
     }
-  }, [userStore.isAuth, userStore.isInitialized, requireAuth, router, pathname, redirectTo]);
+  }, [userStore.state.isAuth, userStore.state.isInitialized, requireAuth, router, pathname, redirectTo]);
 
-  if (!userStore.isInitialized) {
+  if (!userStore.state.isInitialized) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
         <CircularProgress />
@@ -41,11 +41,11 @@ export const AuthGuard = observer(({
     );
   }
 
-  if (requireAuth && userStore.isAuth) {
+  if (requireAuth && userStore.state.isAuth) {
     return <>{children}</>;
   }
 
-  if (!requireAuth && !userStore.isAuth) {
+  if (!requireAuth && !userStore.state.isAuth) {
     return <>{children}</>;
   }
 

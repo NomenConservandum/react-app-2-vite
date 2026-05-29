@@ -25,11 +25,11 @@ const ProfilePageClient = observer(() => {
   const router = useRouter();
   const { userStore, settingsStore } = useStore();
 
-  const profile = userStore.user;
-  const isLoading = !userStore.isInitialized || settingsStore.isLoading;
+  const profile = userStore.state.user;
+  const isLoading = !userStore.state.isInitialized || settingsStore.state.isLoading;
 
   const handleLogout = () => {
-    userStore.logout();
+    userStore.sync.logout();
     router.push(ROUTES.LANDING);
   };
 

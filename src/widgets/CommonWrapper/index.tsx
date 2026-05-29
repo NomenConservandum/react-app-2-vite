@@ -11,10 +11,10 @@ interface CommonWrapperProps {
 
 export const CommonWrapper = observer(({ children }: CommonWrapperProps) => {
   const { settingsStore } = useStore();
-  const { isLoading, error } = settingsStore;
+  const { isLoading, error } = settingsStore.state;
 
   const handleCloseError = () => {
-    settingsStore.clearError();
+    settingsStore.sync.clearError(); // TODO: NOT SURE ABOUT THAT ONE
   };
 
   return (

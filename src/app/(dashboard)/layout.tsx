@@ -51,21 +51,21 @@ const DashboardLayout = observer(({ children }: { children: React.ReactNode }) =
   const [mobileOpen, setMobileOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   
-  const isAuthenticated = userStore.isAuth;
-  const user = userStore.user;
+  const isAuthenticated = userStore.state.isAuth;
+  const user = userStore.state.user;
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
   useEffect(() => {
-    if (!userStore.isInitialized) return;
+    if (!userStore.state.isInitialized) return;
     
     if (!isAuthenticated) {
       router.push(ROUTES.LOGIN);
       return;
     }
-  }, [isAuthenticated, userStore.isInitialized, router]);
+  }, [isAuthenticated, userStore.state.isInitialized, router]);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -81,7 +81,7 @@ const DashboardLayout = observer(({ children }: { children: React.ReactNode }) =
 
   const handleLogout = () => {
     handleMenuClose();
-    userStore.logout();
+    userStore.sync.logout();
     router.push(ROUTES.LANDING);
   };
 
@@ -125,7 +125,7 @@ const DashboardLayout = observer(({ children }: { children: React.ReactNode }) =
     </Box>
   );
 
-  if (!isMounted || !userStore.isInitialized) {
+  if (!isMounted || !userStore.state.isInitialized) {
     return null;
   }
 

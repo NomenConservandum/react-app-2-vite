@@ -1,20 +1,16 @@
-import { UserStore } from './user';
-import { QuotesStore } from './quotes';
-import { SettingsStore } from './settings';
+import { userStore } from './user/userStore';
+import { quotesStore } from './quotes/quotesStore';
+import { settingsStore } from './settings/settingsStore';
 import React from 'react';
 
-export class RootStore {
-  userStore: UserStore;
-  quotesStore: QuotesStore;
-  settingsStore: SettingsStore;
-
-  constructor() {
-    this.userStore = new UserStore(this);
-    this.quotesStore = new QuotesStore(this);
-    this.settingsStore = new SettingsStore(this);
-  }
+class RootStore {
+  userStore = userStore;
+  quotesStore = quotesStore;
+  settingsStore = settingsStore;
 }
 
 export const rootStore = new RootStore();
-export const StoreContext = React.createContext<RootStore>(rootStore);
+export const StoreContext = React.createContext(rootStore);
 export const useStore = () => React.useContext(StoreContext);
+
+export type { RootStore };

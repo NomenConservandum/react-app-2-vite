@@ -2,7 +2,7 @@ import { makeAutoObservable } from 'mobx';
 
 export type ThemeMode = 'light' | 'dark';
 
-export class SettingsState {
+export class SettingsStateStore {
   isLoading: boolean = false;
   error: string | null = null;
   themeMode: ThemeMode = 'light';
@@ -11,7 +11,6 @@ export class SettingsState {
     makeAutoObservable(this);
   }
 
-  // Геттеры (computed values)
   get isDarkTheme(): boolean {
     return this.themeMode === 'dark';
   }

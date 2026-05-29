@@ -19,7 +19,7 @@ const ThemeWrapper = observer(({ children }: { children: React.ReactNode }) => {
   }, []);
   
   // На сервере используем светлую тему
-  const theme = !mounted ? lightTheme : (settingsStore.isDarkTheme ? darkTheme : lightTheme);
+  const theme = !mounted ? lightTheme : (settingsStore.state.isDarkTheme ? darkTheme : lightTheme);
   
   return (
     <ThemeProvider theme={theme}>

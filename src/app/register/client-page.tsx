@@ -54,7 +54,7 @@ const RegisterForm = observer(() => {
     }
     
     try {
-      await userStore.register(formData);
+      await userStore.async.register(formData);
       router.push(`${ROUTES.LOGIN}?registered=true`);
     } catch (err: any) {
       setLocalError(err.response?.data?.message || 'Ошибка регистрации');
@@ -86,7 +86,7 @@ const RegisterForm = observer(() => {
             margin="normal"
             value={formData.firstName}
             onChange={handleChange}
-            disabled={settingsStore.isLoading}
+            disabled={settingsStore.state.isLoading}
             required
           />
           
@@ -98,7 +98,7 @@ const RegisterForm = observer(() => {
             margin="normal"
             value={formData.secondName}
             onChange={handleChange}
-            disabled={settingsStore.isLoading}
+            disabled={settingsStore.state.isLoading}
             required
           />
           
@@ -111,7 +111,7 @@ const RegisterForm = observer(() => {
             margin="normal"
             value={formData.email}
             onChange={handleChange}
-            disabled={settingsStore.isLoading}
+            disabled={settingsStore.state.isLoading}
             required
           />
           
@@ -124,7 +124,7 @@ const RegisterForm = observer(() => {
             margin="normal"
             value={formData.password}
             onChange={handleChange}
-            disabled={settingsStore.isLoading}
+            disabled={settingsStore.state.isLoading}
             required
             helperText="Минимум 6 символов"
             slotProps={{
@@ -144,11 +144,11 @@ const RegisterForm = observer(() => {
             type="submit"
             fullWidth
             size="large"
-            disabled={settingsStore.isLoading}
+            disabled={settingsStore.state.isLoading}
             tooltipText="Создать новый аккаунт"
             sx={{ mt: 3, mb: 2 }}
           >
-            {settingsStore.isLoading ? 'Регистрация...' : 'Зарегистрироваться'}
+            {settingsStore.state.isLoading ? 'Регистрация...' : 'Зарегистрироваться'}
           </CustomButton>
           
           <Box sx={{ textAlign: 'center', mt: 2 }}>

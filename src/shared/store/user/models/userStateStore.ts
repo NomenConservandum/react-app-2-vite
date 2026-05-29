@@ -1,7 +1,7 @@
 import { makeAutoObservable } from 'mobx';
 import type { User } from '@/entities/User/model/types';
 
-export class UserState {
+export class UserStateStore {
   user: User | null = null;
   isAuth: boolean = false;
   accessToken: string | null = null;

@@ -8,17 +8,17 @@ import { useStore } from '@/shared/store';
 import { Loader } from '@/shared/ui/Loader';
 
 const RandomQuoteClient = observer(() => {
-  const { quotesStore, settingsStore } = useStore();
-  const { currentQuote, isLoading } = quotesStore;
+  const { quotesStore } = useStore();
+  const { currentQuote, loading: isLoading } = quotesStore.state;
 
   useEffect(() => {
     if (!currentQuote && !isLoading) {
-      quotesStore.fetchRandomQuote();
+      quotesStore.async.fetchRandomQuote();
     }
   }, [quotesStore, currentQuote, isLoading]);
 
   const handleNewQuote = () => {
-    quotesStore.fetchRandomQuote();
+    quotesStore.async.fetchRandomQuote();
   };
 
   if (isLoading && !currentQuote) {

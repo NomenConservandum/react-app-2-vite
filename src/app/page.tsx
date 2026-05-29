@@ -11,14 +11,14 @@ const HomePage = observer(() => {
   const { userStore } = useStore();
   
   useEffect(() => {
-    if (!userStore.isInitialized) return;
+    if (!userStore.state.isInitialized) return;
     
-    if (userStore.isAuth) {
+    if (userStore.state.isAuth) {
       router.replace(ROUTES.PROFILE);
     } else {
       router.replace(ROUTES.LANDING);
     }
-  }, [userStore.isAuth, userStore.isInitialized, router]);
+  }, [userStore.state.isAuth, userStore.state.isInitialized, router]);
   
   return (
     <div style={{ 

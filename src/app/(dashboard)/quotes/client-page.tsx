@@ -10,22 +10,22 @@ import { Loader } from '@/shared/ui/Loader';
 
 const QuotesListClient = observer(() => {
   const { quotesStore, settingsStore } = useStore();
-  const { allQuotes, hasMore, currentOffset, isLoading } = quotesStore;
+  const { allQuotes, hasMore, currentOffset, loading: isLoading } = quotesStore.state;
 
   useEffect(() => {
     if (allQuotes.length === 0 && !isLoading) {
-      quotesStore.fetchQuotesList(0, 10);
+      quotesStore.async.fetchQuotesList(0, 10);
     }
   }, [quotesStore, allQuotes.length, isLoading]);
 
   const handleLoadMore = () => {
     if (hasMore && !isLoading) {
-      quotesStore.fetchQuotesList(currentOffset + 10, 10);
+      quotesStore.async.fetchQuotesList(currentOffset + 10, 10);
     }
   };
 
   const handleRefresh = () => {
-    quotesStore.fetchQuotesList(0, 10);
+    quotesStore.async.fetchQuotesList(0, 10);
   };
 
   if (isLoading && allQuotes.length === 0) {

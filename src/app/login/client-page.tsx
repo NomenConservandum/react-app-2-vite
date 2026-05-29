@@ -41,7 +41,7 @@ const LoginForm = observer(() => {
     }
     
     try {
-      await userStore.login({ email, password });
+      await userStore.async.login({ email, password });
       router.push(from);
     } catch (err: any) {
       setLocalError(err.response?.data?.message || 'Неверный email или пароль');
@@ -72,7 +72,7 @@ const LoginForm = observer(() => {
             margin="normal"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            disabled={settingsStore.isLoading}
+            disabled={settingsStore.state.isLoading}
             required
           />
           
@@ -84,7 +84,7 @@ const LoginForm = observer(() => {
             margin="normal"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            disabled={settingsStore.isLoading}
+            disabled={settingsStore.state.isLoading}
             required
             slotProps={{
               input: {
@@ -103,11 +103,11 @@ const LoginForm = observer(() => {
             type="submit"
             fullWidth
             size="large"
-            disabled={settingsStore.isLoading}
+            disabled={settingsStore.state.isLoading}
             tooltipText="Войти в аккаунт"
             sx={{ mt: 3, mb: 2 }}
           >
-            {settingsStore.isLoading ? 'Входим...' : 'Войти'}
+            {settingsStore.state.isLoading ? 'Входим...' : 'Войти'}
           </CustomButton>
           
           <Box sx={{ textAlign: 'center', mt: 2 }}>

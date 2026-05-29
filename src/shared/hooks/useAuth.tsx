@@ -19,34 +19,34 @@ export const useAuth = () => {
   };
 
   useEffect(() => {
-    if (!userStore.isInitialized) return;
+    if (!userStore.state.isInitialized) return;
 
     // Защищенные маршруты
-    if (isPrivateRoute(pathname) && !userStore.isAuth) {
+    if (isPrivateRoute(pathname) && !userStore.state.isAuth) {
       router.push(`${ROUTES.LOGIN}?from=${encodeURIComponent(pathname)}`);
       return;
     }
 
     // Маршруты только для неавторизованных
-    if (isPublicOnlyRoute(pathname) && userStore.isAuth) {
+    if (isPublicOnlyRoute(pathname) && userStore.state.isAuth) {
       router.push(ROUTES.PROFILE);
       return;
     }
 
     // Корневой путь - редирект
     if (pathname === ROUTES.HOME) {
-      if (userStore.isAuth) {
+      if (userStore.state.isAuth) {
         router.push(ROUTES.PROFILE);
       } else {
         router.push(ROUTES.LANDING);
       }
     }
-  }, [pathname, userStore.isAuth, userStore.isInitialized, router]);
+  }, [pathname, userStore.state.isAuth, userStore.state.isInitialized, router]);
 
   return {
-    isAuth: userStore.isAuth,
-    user: userStore.user,
-    isLoading: !userStore.isInitialized,
+    isAuth: userStore.state.isAuth,
+    user: userStore.state.user,
+    isLoading: !userStore.state.isInitialized,
   };
 };
 

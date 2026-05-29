@@ -11,10 +11,10 @@ import { ROUTES } from '@/shared/config/routes';
 
 const CreateQuoteClient = observer(() => {
   const router = useRouter();
-  const { quotesStore, settingsStore } = useStore();
+  const { quotesStore } = useStore();
   const [newQuoteText, setNewQuoteText] = useState('');
   const [localError, setLocalError] = useState<string | null>(null);
-  const { isLoading } = quotesStore;
+  const { loading: isLoading } = quotesStore.state;
 
   const handlePublish = async () => {
     if (!newQuoteText.trim()) {
@@ -30,7 +30,7 @@ const CreateQuoteClient = observer(() => {
     setLocalError(null);
     
     try {
-      await quotesStore.createQuote(newQuoteText);
+      await quotesStore.async.createQuote(newQuoteText);
       router.push(ROUTES.QUOTES);
     } catch (err: any) {
       setLocalError(err.message || 'Ошибка публикации');

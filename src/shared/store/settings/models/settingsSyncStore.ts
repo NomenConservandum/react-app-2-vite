@@ -1,35 +1,36 @@
-import { SettingsState, ThemeMode } from './settingsState';
+import { makeAutoObservable } from 'mobx';
+import type { SettingsStateStore, ThemeMode } from './settingsStateStore';
 import Cookies from 'js-cookie';
 
-export class SettingsSync {
-  constructor(private state: SettingsState) {}
+export class SettingsSyncStore {
+  constructor(private state: SettingsStateStore) {
+    makeAutoObservable(this);
+  }
 
-  setLoading = (isLoading: boolean) => {
+  setLoading(isLoading: boolean) {
     this.state.isLoading = isLoading;
-  };
+  }
 
-  setError = (error: string | null) => {
+  setError(error: string | null) {
     this.state.error = error;
-  };
+  }
 
-  clearError = () => {
+  clearError() {
     this.state.error = null;
-  };
+  }
 
-  setThemeMode = (mode: ThemeMode) => {
+  setThemeMode(mode: ThemeMode) {
     this.state.themeMode = mode;
-  };
+  }
 
-  applyTheme = (mode: ThemeMode) => {
+  applyTheme(mode: ThemeMode) {
     if (typeof document === 'undefined') return;
-    
     if (mode === 'dark') {
       document.documentElement.classList.add('dark');
     } else {
       document.documentElement.classList.remove('dark');
     }
-    
     localStorage.setItem('theme', mode);
     Cookies.set('theme', mode, { expires: 365, path: '/' });
-  };
+  }
 }

@@ -7,10 +7,10 @@ import { useStore } from '@/shared/store';
 
 export const ThemeSwitcher = observer(() => {
   const { settingsStore } = useStore();
-  const isDark = settingsStore.isDarkTheme;
+  const isDark = settingsStore.state.isDarkTheme;
   
   const handleToggle = () => {
-    settingsStore.toggleTheme();
+    settingsStore.async.toggleTheme();
   };
   
   return (
