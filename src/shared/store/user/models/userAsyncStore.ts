@@ -1,4 +1,3 @@
-import { makeAutoObservable } from 'mobx';
 import type { UserStateStore } from './userStateStore';
 import type { UserSyncStore } from './userSyncStore';
 import { authApi } from '@/entities/User/api/authApi';
@@ -7,12 +6,16 @@ import type { LoginUser, RegisterUserData } from '@/entities/User/model/types';
 import type { RootStore } from '../../index';
 
 export class UserAsyncStore {
+  private rootStore?: RootStore;
+
   constructor(
     private state: UserStateStore,
-    private sync: UserSyncStore,
-    private rootStore?: RootStore
-  ) {
-    makeAutoObservable(this);
+    private sync: UserSyncStore
+  ) {}
+
+  setRootStore(rootStore: RootStore) {
+    this.rootStore = rootStore;
+    this.initializeAuth(); // Запускаем инициализацию после установки rootStore
   }
 
   initializeAuth = async () => {

@@ -1,4 +1,4 @@
-import { userStore } from './user/userStore';
+import { userStore, setUserStoreRoot } from './user/userStore';
 import { quotesStore } from './quotes/quotesStore';
 import { settingsStore } from './settings/settingsStore';
 import React from 'react';
@@ -7,6 +7,11 @@ class RootStore {
   userStore = userStore;
   quotesStore = quotesStore;
   settingsStore = settingsStore;
+
+  constructor() {
+    // Передаём ссылку на корневой store в async хранилища
+    setUserStoreRoot(this);
+  }
 }
 
 export const rootStore = new RootStore();
